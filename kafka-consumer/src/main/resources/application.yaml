@@ -1,0 +1,99 @@
+server:
+  port: 8086
+
+frontend:
+  host: localhost
+  port: 8088
+  url: http://${frontend.host}:${frontend.port}
+
+spring:
+  main:
+    banner-mode: off
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    security:
+      protocol: PLAINTEXT
+    consumer:
+      consumer-1:
+        group-id: group-1
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        auto-offset-reset: earliest
+        enable-auto-commit: false
+        properties:
+          topics: 1-2
+          concurrency: 1
+      consumer-2:
+        group-id: group-2
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        auto-offset-reset: earliest
+        enable-auto-commit: false
+        properties:
+          topics: 3,4
+          concurrency: 1
+      consumer-3:
+        group-id: group-3
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        auto-offset-reset: earliest
+        enable-auto-commit: false
+        properties:
+          topics: 5-7
+          concurrency: 2
+      consumer-4:
+        group-id: group-4
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        auto-offset-reset: earliest
+        enable-auto-commit: false
+        properties:
+          topics: 8-10
+          concurrency: 2
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+kafka:
+  topics:
+    - name: 1-2
+      partitions: 2
+      replicas: 1
+    - name: 3
+      partitions: 1
+      replicas: 1
+    - name: 4
+      partitions: 1
+      replicas: 1
+    - name: 5-7
+      partitions: 2
+      replicas: 1
+    - name: 8-10
+      partitions: 2
+      replicas: 1
+
+scheduler:
+  schedulers:
+    - topic: 1-2
+      key-min: 1
+      key-max: 2
+    - topic: 3
+      key-min: 3
+      key-max: 3
+    - topic: 4
+      key-min: 4
+      key-max: 4
+    - topic: 5-7
+      key-min: 5
+      key-max: 7
+    - topic: 8-10
+      key-min: 8
+      key-max: 10
+  enable: true
+  pool-size: 100
+
+logging:
+  config: classpath:logback.xml

@@ -1,0 +1,81 @@
+server:
+  port: 8085
+
+frontend:
+  host: localhost
+  port: 8088
+  url: http://${frontend.host}:${frontend.port}
+
+spring:
+  main:
+    banner-mode: off
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    security:
+      protocol: PLAINTEXT
+
+kafka:
+  topics:
+    - name: 1-2
+      partitions: 2
+      replicas: 1
+    - name: 3
+      partitions: 1
+      replicas: 1
+    - name: 4
+      partitions: 1
+      replicas: 1
+    - name: 5-7
+      partitions: 2
+      replicas: 1
+    - name: 8-10
+      partitions: 2
+      replicas: 1
+
+scheduler:
+  schedulers:
+    - initial-delay: 30_000
+      fixed-rate: 1
+      topic: 1-2
+      key-min: 1
+      key-max: 2
+      value-min: -50_000
+      value-max: -10_000
+    - initial-delay: 35_000
+      fixed-rate: 2
+      topic: 3
+      key-min: 3
+      key-max: 3
+      value-min: -5_000
+      value-max: -1
+    - initial-delay: 33_000
+      fixed-rate: 3
+      topic: 4
+      key-min: 4
+      key-max: 4
+      value-min: 0
+      value-max: 50_000
+    - initial-delay: 30_000
+      fixed-rate: 2
+      topic: 5-7
+      key-min: 5
+      key-max: 7
+      value-min: 70_000
+      value-max: 100_000
+    - initial-delay: 31_000
+      fixed-rate: 4
+      topic: 8-10
+      key-min: 8
+      key-max: 10
+      value-min: 250_000
+      value-max: 500_000
+  enable: true
+  pool-size: 100
+
+
+logging:
+  config: classpath:logback.xml
